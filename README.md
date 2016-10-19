@@ -8,6 +8,7 @@
 
 ## 转换原理
 `loader` 会自动提取依赖
+
 input:
 ```js
 export * from 'A.js';
@@ -37,4 +38,4 @@ module.exports = {
 ```
 
 ## TODO
-[] 支持 export default 模块提取
+支持 export default 模块提取
