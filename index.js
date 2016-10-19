@@ -15,9 +15,9 @@ module.exports = function(source) {
     var context = this;
     var rootURL = this.options.context;
     var callback = this.async();
-    this.cacheable && this.cacheable();
-    this._deps = [];
+    var _deps = [];
 
+    this.cacheable && this.cacheable();
 
     /**
      * 获取依赖模块的URL
@@ -38,7 +38,7 @@ module.exports = function(source) {
      */
     var checkLoaded = function() {
         var loaded = true;
-        this._deps.forEach(function(dep) {
+        _deps.forEach(function(dep) {
             if (!dep.load) {
                 loaded = false;
             }
@@ -56,7 +56,7 @@ module.exports = function(source) {
         var exportSomeRegexp = /export\s+\*(\s+from\s+'(.+?\.js)')/g;
 
         result = source.replace(exportSomeRegexp, function(macth, p1, key) {
-            var currentDep = this._deps.find(function(dep) {
+            var currentDep = _deps.find(function(dep) {
                 return dep.url === key;
             })
             if (currentDep) {
@@ -78,8 +78,8 @@ module.exports = function(source) {
      */
     var transfromExportAllFrom = function(source) {
         // 分析app.js的依赖模块
-        this._deps = getModuleImports(source);
-        this._deps.forEach(function(dep) {
+        _deps = getModuleImports(source);
+        _deps.forEach(function(dep) {
             // 读取依赖文件
             readFile(path.resolve(rootURL, dep.url), 'utf-8', function(err, body) {
                 var exportVars = /\s*export\s+\{(.+?)\}\s*/g.exec(body);
