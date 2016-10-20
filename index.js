@@ -9,7 +9,8 @@
 
 var loaderUtils = require('loader-utils');
 var readFile = require('read-file');
-var path = require('path');
+var findModule = require('find-module');
+var stripJS = require('strip-comment').js;
 
 module.exports = function(source) {
     var context = this;
@@ -24,11 +25,12 @@ module.exports = function(source) {
      * @return {Array} URL数组集合
      */
     var getModuleImports = function(source) {
-        var exportAllRegexp = /export\s+\*\s+from\s+('.+?\.js')/g;
-        var exportURLArray = source.match(exportAllRegexp);
+        var exportAllRegexp = /export\s+\*\s+from\s+('|").+?\1/g;
+        // 需要删除注释后才能提取依赖导入
+        var exportURLArray = stripJS(source).match(exportAllRegexp);
 
         return exportURLArray.map(function(item) {
-            return {url: item.split('\'')[1]};
+            return {url: item.split(/['|"]/)[1]};
         });
     }
 
@@ -48,20 +50,22 @@ module.exports = function(source) {
     }
 
     /**
-     * 所有模块文件加载完毕后
+     * 模块解析完毕后，替换入库文件
      */
     var doLoaed = function() {
         var result;
         var exportDeps = [];
-        var exportSomeRegexp = /export\s+\*(\s+from\s+'(.+?\.js)')/g;
+        var exportSomeRegexp = /export\s+\*\s+from\s+("|')(.+?)\1/g;
 
-        result = source.replace(exportSomeRegexp, function(macth, p1, key) {
+        result = stripJS(source).replace(exportSomeRegexp, function() {
+            var key = arguments[2];
             var currentDep = _deps.find(function(dep) {
                 return dep.url === key;
-            })
+            });
+
             if (currentDep) {
                 exportDeps = exportDeps.concat(currentDep.list);
-                return 'import' + ' {'+currentDep.list.join(',')+'} ' + p1;
+                return 'import' + ' { '+currentDep.list.join(', ')+' } from \'' + currentDep.url + '\'';
             } else {
                 return match;
             }
@@ -69,7 +73,7 @@ module.exports = function(source) {
 
         result += '\nexport {'+ exportDeps.join(', ') +'};'
 
-        callback(null, result);
+        callback(null, source);
     }
 
     /**
@@ -80,20 +84,43 @@ module.exports = function(source) {
         // 分析app.js的依赖模块
         _deps = getModuleImports(source);
         _deps.forEach(function(dep) {
-            // 读取依赖文件
-            readFile(path.resolve(rootURL, dep.url), 'utf-8', function(err, body) {
-                var exportVars = /\s*export\s+\{(.+?)\}\s*/g.exec(body);
-
-                if (exportVars.length > 1) {
-                    dep.list = exportVars[1].split(',').map(function(item) {
-                        return item.trim();
-                    });
+            // 处理 url
+            var _url = '';
+            if (dep.url.indexOf('./') < 0) {
+                // export * from 'utils'
+                _url = './node_modules/' + dep.url + '/index.js';
+            } else {
+                if (dep.url.test(/\.js$/g)) {
+                    _url = dep.url;
                 } else {
-                    dep.list = [];
+                    _url = dep.url + '/js';
+                }
+            }
+
+            // 寻找模块
+            findModule(dep.url, {
+                dirname: rootURL
+            }, function(err, filename) {
+                if (err) {
+                    return;
                 }
 
-                dep.load = true;
-                checkLoaded();
+                // 读取文件
+                readFile(filename, 'utf-8', function(err, body) {
+                    if (err) return;
+
+                    var exportVars = /\s*export\s+\{(.+?)\}\s*/g.exec(stripJS(body));
+                    if (exportVars.length > 1) {
+                        dep.list = exportVars[1].split(',').map(function(item) {
+                            return item.trim();
+                        });
+                    } else {
+                        dep.list = [];
+                    }
+
+                    dep.load = true;
+                    checkLoaded();
+                });
             });
         });
     }
