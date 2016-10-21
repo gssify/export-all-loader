@@ -1,6 +1,6 @@
 {
   "name": "export-wildcard-loader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "export wildcard to general usage",
   "main": "index.js",
   "scripts": {

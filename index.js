@@ -73,7 +73,7 @@ module.exports = function(source) {
 
         result += '\nexport {'+ exportDeps.join(', ') +'};'
 
-        callback(null, source);
+        callback(null, result);
     }
 
     /**
