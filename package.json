@@ -19,7 +19,7 @@
     "url": "https://github.com/gssan/export-wildcard-loader/issues"
   },
   "homepage": "https://github.com/gssan/export-wildcard-loader#readme",
-  "devDependencies": {
+  "dependencies": {
     "find-module": "^0.2.1",
     "loader-utils": "^0.2.16",
     "read-file": "^0.2.0",
