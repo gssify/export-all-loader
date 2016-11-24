@@ -1,41 +1,44 @@
-# export-wildcard-loader
-可以将 `export *` 转换成普通的 `export {}` 的 webpack loader
+# export-all-loader
+> Babel preloader for Webpack 
 
-## 使用场景
-- 使用 `webpack`、`babel`
-- 需要支持 IE8
-- 代码中 `export * from 'xx.js'`
+Transforms your `export * from 'xxx'` to `export {}` which can avoid `Object.defineProperty` in IE8.
 
-## 转换原理
-`loader` 会自动提取依赖
+![issues](https://img.shields.io/github/issues/gssan/export-all-loader.svg) ![stars](https://img.shields.io/github/stars/gssan/export-all-loader.svg) ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-input:
-```js
-export * from 'A.js';
-export * from 'B.js';
-```
-output:
-```js
-import {A1, A2} from 'A.js';
-import {B1, B2} from 'B.js';
-export {A1, A2, B1, B2}
+## Installation
+```bash
+$ npm install export-all-loader
 ```
 
-## 使用方法
-webpack.config.js
+## Quick Start
+**webpack config:**
 ```js
 module.exports = {
     module: {
         preLoaders: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules)/,
-                loader: 'export-wildcard'
+                loader: 'export-all'
             }
         ]
     }
 }
 ```
 
-## TODO
-支持 export default 模块提取
+## Examples
+**Input:**
+```js
+export * from 'a.js';
+export * from 'b.js';
+```
+**Output:**
+```js
+import {a1, a2} from 'a.js';
+import {b1, b2} from 'b.js';
+
+export {a1, a2, b1, b2}
+```
+
+## Problems
+* Not support `export default`
+* Cannot use with `babel-plugin-module-resolver`

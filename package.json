@@ -1,24 +1,29 @@
 {
-  "name": "export-wildcard-loader",
-  "version": "1.0.2",
-  "description": "export wildcard to general usage",
+  "name": "export-all-loader",
+  "version": "1.0.0",
+  "description": "transforms export * from 'xxx' to export {}",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gssan/export-wildcard-loader.git"
+    "url": "git+https://github.com/gssan/export-all-loader.git"
   },
   "keywords": [
-    "export"
+    "export",
+    "import",
+    "loader",
+    "ie8",
+    "defineProperty",
+    "babel"
   ],
-  "author": "gssan",
+  "author": "gssan(gssify@gmail.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gssan/export-wildcard-loader/issues"
+    "url": "https://github.com/gssan/export-all-loader/issues"
   },
-  "homepage": "https://github.com/gssan/export-wildcard-loader#readme",
+  "homepage": "https://github.com/gssan/export-all-loader#readme",
   "dependencies": {
     "find-module": "^0.2.1",
     "loader-utils": "^0.2.16",

@@ -93,7 +93,7 @@ module.exports = function(source) {
                 if (dep.url.test(/\.js$/g)) {
                     _url = dep.url;
                 } else {
-                    _url = dep.url + '/js';
+                    _url = dep.url + '.js';
                 }
             }
 
