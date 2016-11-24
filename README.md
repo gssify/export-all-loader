@@ -1,9 +1,7 @@
-# export-all-loader ![](https://badge.fury.io/js/export-all-loader.svg)
+# export-all-loader ![](https://badge.fury.io/js/export-all-loader.svg) ![issues](https://img.shields.io/github/issues/gssan/export-all-loader.svg) ![stars](https://img.shields.io/github/stars/gssan/export-all-loader.svg) ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 > Babel preloader for Webpack 
 
 Transforms your `export * from 'xxx'` to `export {}` which can avoid `Object.defineProperty` in IE8.
-
-![issues](https://img.shields.io/github/issues/gssan/export-all-loader.svg) ![stars](https://img.shields.io/github/stars/gssan/export-all-loader.svg) ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Installation
 ```bash
