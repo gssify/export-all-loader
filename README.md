@@ -1,4 +1,4 @@
-# export-all-loader
+# export-all-loader ![](https://badge.fury.io/js/export-all-loader.svg)
 > Babel preloader for Webpack 
 
 Transforms your `export * from 'xxx'` to `export {}` which can avoid `Object.defineProperty` in IE8.
