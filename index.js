@@ -90,7 +90,7 @@ module.exports = function(source) {
                 // export * from 'utils'
                 _url = './node_modules/' + dep.url + '/index.js';
             } else {
-                if (dep.url.test(/\.js$/g)) {
+                if (/\.js$/.test(dep.url)) {
                     _url = dep.url;
                 } else {
                     _url = dep.url + '.js';
